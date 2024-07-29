@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horse Blanket Weight Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input, button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Horse Blanket Weight Calculator</h1>
+        <form id="postcodeForm">
+            <label for="postcode">Enter Australian Postcode:</label>
+            <input type="text" id="postcode" required>
+            <button type="submit">Get Blanket Weight</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('postcodeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const postcode = document.getElementById('postcode').value;
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Note: Replace 'YOUR_API_KEY' with an actual API key
+                const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=4450ffd692ce4dc88b4113003242907&q=${postcode}&aqi=no`);
+                const tempC = response.data.current.temp_c;
+                
+                let blanketWeight;
+                if (tempC < 5) {
+                    blanketWeight = "Heavy (400g)";
+                } else if (tempC < 15) {
+                    blanketWeight = "Medium (300g)";
+                } else {
+                    blanketWeight = "Light (200g)";
+                }
+                
+                resultDiv.innerHTML = `Current temperature: ${tempC}°C<br>Recommended blanket weight: ${blanketWeight}`;
+            } catch (error) {
+                resultDiv.innerHTML = "Error fetching weather data. Please check the postcode and try again.";
+            }
+        });
+    </script>
+</body>
+</html>
