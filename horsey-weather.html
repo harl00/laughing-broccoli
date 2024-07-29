@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horse Blanket Weight Calculator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <title>DannyComfort: Horse Blanket Weight Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +20,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             color: #333;
             text-align: center;
         }
@@ -44,9 +43,16 @@
         button:hover {
             background-color: #45a049;
         }
-        #result {
+        #result, #testInfo {
             margin-top: 20px;
+        }
+        #result {
             font-weight: bold;
+        }
+        #testInfo {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
         }
         @media (max-width: 480px) {
             body {
@@ -60,25 +66,61 @@
 </head>
 <body>
     <div class="container">
-        <h1>Horse Blanket Weight Calculator</h1>
+        <h1>DannyComfort</h1>
+        <h2>Horse Blanket Weight Calculator</h2>
         <form id="postcodeForm">
             <label for="postcode">Enter Australian Postcode:</label>
             <input type="text" id="postcode" required>
             <button type="submit">Get Blanket Weight</button>
         </form>
         <div id="result"></div>
+        <div id="testInfo">
+            <h3>Test Postcodes:</h3>
+            <p>Use these postcodes to test the app:</p>
+            <ul>
+                <li>2000 (Sydney)</li>
+                <li>3000 (Melbourne)</li>
+                <li>4000 (Brisbane)</li>
+                <li>5000 (Adelaide)</li>
+                <li>6000 (Perth)</li>
+                <li>7000 (Hobart)</li>
+            </ul>
+            <p>Any other postcode will return an error message.</p>
+        </div>
     </div>
 
     <script>
+        // Simulated weather data for Australian postcodes
+        const weatherData = {
+            '2000': { temp_c: 22 },  // Sydney
+            '3000': { temp_c: 18 },  // Melbourne
+            '4000': { temp_c: 25 },  // Brisbane
+            '5000': { temp_c: 20 },  // Adelaide
+            '6000': { temp_c: 23 },  // Perth
+            '7000': { temp_c: 15 },  // Hobart
+        };
+
+        // Simulated API call
+        function getWeather(postcode) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (weatherData[postcode]) {
+                        resolve(weatherData[postcode]);
+                    } else {
+                        reject(new Error('Postcode not found'));
+                    }
+                }, 500);  // Simulate network delay
+            });
+        }
+
         document.getElementById('postcodeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const postcode = document.getElementById('postcode').value;
             const resultDiv = document.getElementById('result');
             
             try {
-                // Note: Replace 'YOUR_API_KEY' with an actual API key
-                const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=4450ffd692ce4dc88b4113003242907&q=${postcode}&aqi=no`);
-                const tempC = response.data.current.temp_c;
+                const weather = await getWeather(postcode);
+                const tempC = weather.temp_c;
                 
                 let blanketWeight;
                 if (tempC < 5) {
